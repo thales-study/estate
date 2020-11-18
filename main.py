@@ -1,7 +1,7 @@
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.svm import LinearSVC 
+from sklearn.svm import SVC 
 import pandas as pd
 import matplotlib.pyplot as plt 
 
@@ -15,7 +15,7 @@ C = 1.0 #float, default=1.0 Regularization parameter. The strength of the regula
 
 pipe = make_pipeline(
   StandardScaler(),
-  LinearSVC(random_state = 0, tol = tol, C = C)
+  SVC(random_state = 0, tol = tol, C = C)
 )
 columns = [
   # '宗地编号',
@@ -36,8 +36,8 @@ X = df.loc[:, columns].values
 y = df.loc[:,  '项目验证（标签）'].values
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
 pipe.fit(X_train, y_train.astype('int'))
-print(pipe.named_steps['linearsvc'].coef_)
-print(pipe.named_steps['linearsvc'].intercept_)
+# print(pipe.named_steps['svc'].coef_)
+print(pipe.named_steps['svc'].intercept_)
 res = pipe.predict(X_test)
 print(res)
 
