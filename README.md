@@ -26,6 +26,9 @@ feagure.py
 
 accuracy.py
 
+
+![准确度](./out/accuracy.png)
+
 ## 语言
 
 
