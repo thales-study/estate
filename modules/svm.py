@@ -53,5 +53,6 @@ def run(seed = 0, C = 1, feagures = []):
   return {
     "seed": seed,
     "accuracy": accuracy_score(y_test, predictions),
-    "precision": precision_score(y_test, predictions)
+    "precision": precision_score(y_test, predictions),
+    "recall": recall_score(y_test, predictions)
   }
