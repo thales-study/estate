@@ -7,37 +7,47 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-df = pd.read_excel("estate.xlsx", sheet_name="粗加工")
-df.drop(0, inplace = True)
+df = pd.read_excel("estate.xlsx", sheet_name="粗加工") # 读取xlsx数据
+df.drop(0, inplace = True) # 标题有两个，需要去掉一个
 
-columns = [
-  # '宗地编号',
-  # '成交时间',
-  '区域',
-  '规划用途',
-  '占地面积',
-  '建筑面积',
-  '成交总价（万元）',
-  '成交单价（元/㎡）', 
-  '楼面地价（元/㎡）',
-  '容积率',
-  '溢价率',
-  '竞得品牌分级',
-  # '项目验证（标签）'
-]
-X = df.loc[:, columns].values
-y = df.loc[:,  '项目验证（标签）'].values
-
-tol = 1e-4 #float, default=1e-4 Tolerance for stopping criteria.
-C = 0.5 #float, default=1.0 Regularization parameter. The strength of the regularization is inversely proportional to C. Must be strictly positive.
-
-def run(seed):
+def run(seed = 0, C = 1, feagures = []):
+  """运行svm
+  Parameters
+  ----------
+  seed: 随机种子
+  C: 学习力度，过小会“欠学习”，过大会“过学习”
+  feagues: 特征选择
+  """
   pipe = make_pipeline(
     StandardScaler(),
-    SVC(random_state = 0, tol = tol, C = C)
+    SVC(random_state = 0, C = C)
   )
 
-  X_train, X_test, y_train, y_test = train_test_split(X[:,2:9], y, random_state = seed)
+  columns = [
+    # '宗地编号',
+    # '成交时间',
+    '区域',
+    '规划用途',
+    '占地面积',
+    '建筑面积',
+    '成交总价（万元）',
+    '成交单价（元/㎡）', 
+    '楼面地价（元/㎡）',
+    '容积率',
+    '溢价率',
+    '竞得品牌分级',
+    # '项目验证（标签）'
+  ]
+  if feagures and len(feagures) > 0:
+    arr = []
+    for i in feagures:
+      arr.append(columns[i])
+    columns = arr
+  X = df.loc[:, columns].values
+  y = df.loc[:,  '项目验证（标签）'].values
+
+
+  X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = seed)
   pipe.fit(X_train, y_train)
   predictions = pipe.predict(X_test)
   return {
