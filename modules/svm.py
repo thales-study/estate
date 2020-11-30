@@ -56,3 +56,53 @@ def run(seed = 0, C = 1, feagures = []):
     "precision": precision_score(y_test, predictions),
     "recall": recall_score(y_test, predictions)
   }
+
+def predict(C = 1, feagures = []):
+  """预测
+  Parameters
+  ----------
+  C: 学习力度，过小会“欠学习”，过大会“过学习”
+  feagues: 特征选择
+  """
+  pipe = make_pipeline(
+    StandardScaler(),
+    SVC(random_state = 0, C = C)
+  )
+
+  columns = [
+    # '宗地编号',
+    # '成交时间',
+    '区域',
+    '规划用途',
+    '占地面积',
+    '建筑面积',
+    '成交总价（万元）',
+    '成交单价（元/㎡）', 
+    '楼面地价（元/㎡）',
+    '容积率',
+    '溢价率',
+    '竞得品牌分级',
+    # '项目验证（标签）'
+  ]
+  if feagures and len(feagures) > 0:
+    arr = []
+    for i in feagures:
+      arr.append(columns[i])
+    columns = arr
+  X = df.loc[:, columns].values
+  y = df.loc[:,  '项目验证（标签）'].values
+  pipe.fit(X, y)
+
+  reality = pd.read_excel("estate.xlsx", sheet_name="2020粗加工")
+  reality.drop(0, inplace = True)
+  real_X = reality.loc[:, columns].values
+  real_y = reality.loc[:,  '项目验证（标签）'].values
+
+  predictions = pipe.predict(real_X)
+  return {
+    "accuracy": accuracy_score(real_y, predictions),
+    "precision": precision_score(real_y, predictions),
+    "recall": recall_score(real_y, predictions),
+    "origin": reality.loc[:].values,
+    "predictions": predictions
+  }
