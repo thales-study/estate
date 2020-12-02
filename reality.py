@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 feagures = [2, 3, 4, 9]
-res = svm.predict(10, feagures)
+res = svm.predict(10, feagures, 15)
 
 df = pd.read_excel("estate.xlsx", sheet_name="2020粗加工")
 df = df.drop(df.columns[-3:], axis=1)

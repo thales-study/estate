@@ -10,7 +10,7 @@ import pandas as pd
 df = pd.read_excel("estate.xlsx", sheet_name="粗加工") # 读取xlsx数据
 df.drop(0, inplace = True) # 标题有两个，需要去掉一个
 
-def run(seed = 0, C = 1, feagures = []):
+def run(seed = 0, C = 1, feagures = [], gamma = 1):
   """运行svm
   Parameters
   ----------
@@ -20,7 +20,7 @@ def run(seed = 0, C = 1, feagures = []):
   """
   pipe = make_pipeline(
     StandardScaler(),
-    SVC(random_state = 0, C = C)
+    SVC(random_state = 0, C = C, gamma = gamma)
   )
 
   columns = [
@@ -57,7 +57,7 @@ def run(seed = 0, C = 1, feagures = []):
     "recall": recall_score(y_test, predictions)
   }
 
-def predict(C = 1, feagures = []):
+def predict(C = 1, feagures = [], gamma = 1):
   """预测
   Parameters
   ----------
@@ -66,7 +66,7 @@ def predict(C = 1, feagures = []):
   """
   pipe = make_pipeline(
     StandardScaler(),
-    SVC(random_state = 0, C = C)
+    SVC(random_state = 0, C = C, gamma = gamma)
   )
 
   columns = [
