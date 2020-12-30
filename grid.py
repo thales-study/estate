@@ -2,36 +2,46 @@ import modules.svm as svm
 import matplotlib.pyplot as plt
 import numpy as np
 
-params = [-3, -2, -1, 0, 1, 2, 3]
-feagures = [2,3,4,9]
+
 plt.rcParams['font.family'] = ['SimHei']  # 中文字体设置
 plt.rcParams['axes.unicode_minus'] = False
+
+c = np.array([-3, -2, -1, 0, 1, 2, 3])
+gamma = np.array([-3, -2, -1, 0, 1, 2, 3])
+c = 10.0 ** c
+gamma = 10.0 ** gamma
+feagures = [2,3,4,9]
+
+arr = []
+for m, y in enumerate(gamma):
+  for n, x in enumerate(c):
+    ids = []
+    for seed in range(1, 50):
+      res = svm.run(seed, x,feagures, y)
+      accuracy = res["accuracy"]
+      ids.append(accuracy)
+    arr.append(np.mean(ids))
+harvest = np.array(arr)
+harvest = harvest * 255
+harvest = harvest.astype(np.int8)
+harvest = np.reshape(harvest, (len(gamma), len(c)))
+
 fig, ax = plt.subplots()
-ax.set_xlabel('c')
-ax.set_ylabel('gamma')
-ax.set_title('c & gamma')
-# ax.grid(True)
+im = ax.imshow(harvest)
 
-utmost = {
-  "accuracy": 0,
-  "x": 0,
-  "y": 0
-}
-for m in range(len(params)):
-  for n in range(len(params)):
-    x = params[n]
-    y = params[m]
-    res = svm.run(1, 10 ** x, feagures, 10 ** y)
-    accuracy = res["accuracy"]
-    if accuracy > utmost["accuracy"]:
-      utmost["accuracy"] = accuracy
-      utmost["x"] = x
-      utmost["y"] = y
+ax.set_xticks(np.arange(len(c)))
+ax.set_yticks(np.arange(len(gamma)))
 
-    scale = (accuracy * 5) ** 3
-    plt.scatter(params[n], params[m], scale, c="r")
-print(utmost)
+ax.set_xticklabels(c)
+ax.set_yticklabels(gamma)
 
+ax.set_xlabel("c 10 ** n")
+ax.set_ylabel("gamma 10 ** n")
+
+for i in range(len(gamma)):
+  for j in range(len(c)):
+    text = ax.text(j, i, "%.2f" % arr[j + i * len(gamma)], ha="center", va="center", color="w")
+
+ax.set_title("c & gamma")
 fig.tight_layout()
 plt.show()
-

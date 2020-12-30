@@ -51,11 +51,11 @@ radar.py
 ![准确度](./out/feagure_accuracy.png)
 
 
-学习力度准确度
-> c_accuracy.py
+热力图(学习力度和高斯分布)
+> gird.py
 
 
-![准确度](./out/c_accuracy.png)
+![准确度](./out/grid.png)
 
 
 ## 语言
